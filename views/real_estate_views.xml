@@ -1,12 +1,105 @@
 <?xml version='1.0' encoding='utf-8'?>
- <odoo>
- <record id="real_estate_property_view_tree" model="ir.ui.view">
+<odoo>
+    <record id="real_estate_property_view_tree" model="ir.ui.view">
         <field name="name">real.estate.property.tree</field>
         <field name="model">real.estate.property</field>
         <field name="arch" type="xml">
-            <tree string="Channel">
+            <tree string="Real Estate Properties">
                 <field name="name"/>
+                <field name="postcode"/>
+                <field name="bedrooms"/>
+                <field name="living_area"/>
+                <field name="expected_price"/>
+                <field name="selling_price"/>
+
             </tree>
         </field>
     </record>
- </odoo>
+
+    <record id="real_estate_property_view_search" model="ir.ui.view">
+        <field name="name">real.estate.property.search</field>
+        <field name="model">real.estate.property</field>
+        <field name="arch" type="xml">
+            <search string="Real Estate Property">
+                <field name="name" />
+                <field name="description"/>
+                <field name="postcode"/>
+                <field name="date_availability"/>
+                <field name="expected_price"/>
+                <field name="selling_price"/>
+                <field name="bedrooms"/>
+                <field name="living_area"/>
+                <field name="garage"/>
+                <field name="facades"/>
+                <field name="garden"/>
+                <field name="garden_area"/>
+                <field name="garden_orientation"/>
+                <field name="state"/>
+                <field name="active"/>
+
+                <filter name="filter_available" string="Available" domain="[('state', 'in', ['new', 'offer_received'])]"/>
+
+                <group string="Group By">
+                    <filter name="group_by_postcode" string="Postcode" context="{'group_by': 'postcode'}"/>
+                </group>
+
+
+            </search>
+        </field>
+    </record>
+
+    <record id="real_estate_property_view_form" model="ir.ui.view">
+        <field name="name">real.estate.property.form</field>
+        <field name="model">real.estate.property</field>
+        <field name="arch" type="xml">
+            <form string="Real Estate Property">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="postcode"/>
+                        <field name="expected_price"/>
+                        <field name="date_availability"/>
+                        <field name="selling_price"/>
+
+                    </group>
+
+                    <notebook>
+                        <page string="Description">
+                            <group string="Property Description">
+                                <field name="description" widget="html"/>
+                            </group>
+
+                            <group>
+                                <field name="bedrooms"/>
+                                <field name="living_area"/>
+                                <field name="facades"/>
+
+                                <field name="garage"/>
+                                <field name="garden"/>
+                                <field name="garden_area"/>
+                                <field name="garden_orientation"/>
+                                <field name="state" />
+                            </group>
+                        </page>
+                    </notebook>
+                    
+
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="real_estate_property_action" model="ir.actions.act_window">
+        <field name="name">Real Estate Property</field>
+        <field name="res_model">real.estate.property</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="real_estate_property_root" name="Real Estate">
+        <menuitem id="test_first_level_menu" name="Advertisements">
+            <menuitem id="test_model_menu_action" action="real_estate_property_action"/>
+        </menuitem>
+    </menuitem>
+
+
+</odoo>
