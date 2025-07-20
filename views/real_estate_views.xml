@@ -8,10 +8,11 @@
                 <field name="name"/>
                 <field name="postcode"/>
                 <field name="bedrooms"/>
+                <field name="tag_ids" widget="many2many_tags"/>
                 <field name="living_area"/>
                 <field name="expected_price"/>
                 <field name="selling_price"/>
-
+                <field name="property_type_id"/>
             </tree>
         </field>
     </record>
@@ -20,7 +21,7 @@
         <field name="name">real.estate.property.search</field>
         <field name="model">real.estate.property</field>
         <field name="arch" type="xml">
-            <search string="Real Estate Property">
+            <search>
                 <field name="name" />
                 <field name="description"/>
                 <field name="postcode"/>
@@ -36,14 +37,12 @@
                 <field name="garden_orientation"/>
                 <field name="state"/>
                 <field name="active"/>
+                <field name="property_type_id"/>
 
                 <filter name="filter_available" string="Available" domain="[('state', 'in', ['new', 'offer_received'])]"/>
-
-                <group string="Group By">
+                <group expand="1" string="Group By">
                     <filter name="group_by_postcode" string="Postcode" context="{'group_by': 'postcode'}"/>
                 </group>
-
-
             </search>
         </field>
     </record>
@@ -52,40 +51,64 @@
         <field name="name">real.estate.property.form</field>
         <field name="model">real.estate.property</field>
         <field name="arch" type="xml">
-            <form string="Real Estate Property">
+            <form>
+                    <header>
+                        <button name="action_cancel" type="object" string="Cancel" class="btn btn-secondary" />
+                        <button name="action_sold" type="object" string="Sold" class="btn btn-primary" /> 
+                    </header>
                 <sheet>
+
+
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+
                     <group>
-                        <field name="name"/>
                         <field name="postcode"/>
+                        <field name="state" />
+
+                        <field name="tag_ids" widget="many2many_tags"/>
                         <field name="expected_price"/>
                         <field name="date_availability"/>
                         <field name="selling_price"/>
-
+                        <field name="property_type_id"/>
+                        <field name="best_price" readonly="True"/>
                     </group>
 
                     <notebook>
                         <page string="Description">
-                            <group string="Property Description">
-                                <field name="description" widget="html"/>
-                            </group>
-
                             <group>
+                                <field name="description"/>
                                 <field name="bedrooms"/>
                                 <field name="living_area"/>
                                 <field name="facades"/>
-
                                 <field name="garage"/>
                                 <field name="garden"/>
                                 <field name="garden_area"/>
                                 <field name="garden_orientation"/>
-                                <field name="state" />
+                                <field name="total_area" readonly="True"/>
+
                             </group>
                         </page>
-                    </notebook>
-                    
 
+                        <page string="Other Info">
+                            <group>
+                                <field name="buyer_id" />
+                                <field name="user_id"/>
+                                <field name="selling_price" readonly="True"/>
+                            </group>
+                        </page>
+                        <page string="Offers ">
+
+                            <field name="offer_ids"/>
+
+                        </page>
+                    </notebook>
                 </sheet>
             </form>
+
         </field>
     </record>
 
@@ -96,10 +119,8 @@
     </record>
 
     <menuitem id="real_estate_property_root" name="Real Estate">
-        <menuitem id="test_first_level_menu" name="Advertisements">
-            <menuitem id="test_model_menu_action" action="real_estate_property_action"/>
+        <menuitem id="real_estate_property_advertisement_menu" name="Advertisements">
+            <menuitem id="real_estate_properties_menu" name="Properties" action="real_estate_property_action" />
         </menuitem>
     </menuitem>
-
-
 </odoo>
