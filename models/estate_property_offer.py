@@ -19,27 +19,44 @@ class EstatePropertyOffer(models.Model):
     property_id = fields.Many2one("real.estate.property", string="Property")
 
     validity = fields.Integer(string="Validity (days)", default=7)
-    date_deadline = fields.Date(string="Deadline", compute="_compute_date_deadline", inverse="_inverse_date_deadline", store=True)
-    selling_price = fields.Float(related='property_id.selling_price', readonly=True)
-    buyer_id = fields.Many2one('res.partner', related='property_id.buyer_id', readonly=True)
+    date_deadline = fields.Date(
+        string="Deadline",
+        compute="_compute_date_deadline",
+        inverse="_inverse_date_deadline",
+        store=True,
+    )
+    selling_price = fields.Float(related="property_id.selling_price", readonly=True)
+    buyer_id = fields.Many2one(
+        "res.partner", related="property_id.buyer_id", readonly=True
+    )
 
+    _sql_constraints = [
+        (
+            "check_offer_price_positive",
+            "CHECK(price > 0)",
+            "Offer price must be strictly positive.",
+        )
+    ]
 
     def action_accept(self):
         for offer in self:
-            other_offers = self.search([
-                ('property_id', '=', offer.property_id.id),
-                ('status', '=', 'accepted')
-            ])
+            other_offers = self.search(
+                [
+                    ("property_id", "=", offer.property_id.id),
+                    ("status", "=", "accepted"),
+                ]
+            )
             if other_offers:
                 raise UserError("Only one offer can be accepted per property.")
-            offer.status = 'accepted'
+            offer.status = "accepted"
             offer.property_id.buyer_id = offer.partner_id
             offer.property_id.selling_price = offer.price
 
     def action_refuse(self):
         for offer in self:
-            offer.status = 'refused'
-    @api.depends('create_date', 'validity')
+            offer.status = "refused"
+
+    @api.depends("create_date", "validity")
     def _compute_date_deadline(self):
         for offer in self:
             create_date = offer.create_date or fields.Datetime.now()
@@ -48,6 +65,8 @@ class EstatePropertyOffer(models.Model):
     def _inverse_date_deadline(self):
         for offer in self:
             create_date = offer.create_date or fields.Datetime.now()
-            offer.validity = (offer.date_deadline - create_date.date()).days if offer.date_deadline else 0
-
-    
+            offer.validity = (
+                (offer.date_deadline - create_date.date()).days
+                if offer.date_deadline
+                else 0
+            )

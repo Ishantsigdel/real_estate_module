@@ -8,7 +8,7 @@
                 <field name="name"/>
                 <field name="postcode"/>
                 <field name="bedrooms"/>
-                <field name="tag_ids" widget="many2many_tags"/>
+                <!-- <field name="tag_ids" widget="many2many_tags"/> -->
                 <field name="living_area"/>
                 <field name="expected_price"/>
                 <field name="selling_price"/>
@@ -65,18 +65,21 @@
                         </h1>
                     </div>
 
-                    <group>
-                        <field name="postcode"/>
-                        <field name="state" />
+                    <group col="2">
+            <group>
+                <field name="postcode"/>
+                <field name="state"/>
+                <!-- <field name="tag_ids" widget="many2many_tags"/> -->
+                <field name="expected_price"/>
+            </group>
 
-                        <field name="tag_ids" widget="many2many_tags"/>
-                        <field name="expected_price"/>
-                        <field name="date_availability"/>
-                        <field name="selling_price"/>
-                        <field name="property_type_id"/>
-                        <field name="best_price" readonly="True"/>
-                    </group>
-
+            <group>
+                <field name="date_availability"/>
+                <field name="selling_price"/>
+                <field name="property_type_id"/>
+                <field name="best_price" readonly="True"/>
+            </group>
+        </group>
                     <notebook>
                         <page string="Description">
                             <group>

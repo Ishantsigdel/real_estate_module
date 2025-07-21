@@ -1,5 +1,6 @@
 from odoo import models, fields, api
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, ValidationError
+from odoo.tools.float_utils import float_compare, float_is_zero
 
 
 class RealEstateProperty(models.Model):
@@ -11,7 +12,6 @@ class RealEstateProperty(models.Model):
     postcode = fields.Char(string="Postcode")
     date_availability = fields.Date(string="Available From")
     expected_price = fields.Float(string="Expected Price", required=True)
-    selling_price = fields.Float(string="Selling Price")
     bedrooms = fields.Integer(string="Bedrooms", default=2)
     living_area = fields.Integer(string="Living Area (sq ft)")
     garage = fields.Boolean(string="Garage")
@@ -37,7 +37,7 @@ class RealEstateProperty(models.Model):
         copy=False,
         default="new",
     )
-   
+
     property_type_id = fields.Many2one(
         "estate.property.type", string="Property Type", required=True
     )
@@ -49,7 +49,7 @@ class RealEstateProperty(models.Model):
         tracking=True,
         default=lambda self: self.env.user,
     )
-    selling_price = fields.Float(string="Selling Price", readonly=True, copy=False)
+    selling_price = fields.Float(string="Selling Price", copy=False)
 
     tag_ids = fields.Many2many("estate.property.tag", string="Tags")
     offer_ids = fields.One2many("estate.property.offer", "property_id", string="Offers")
@@ -59,7 +59,19 @@ class RealEstateProperty(models.Model):
     best_price = fields.Float(
         string="Best Offer Price", compute="_compute_best_price", store=True
     )
-   
+
+    _sql_constraints = [
+        (
+            "check_expected_price",
+            "CHECK(expected_price > 0)",
+            "Expected price must be strictly positive.",
+        ),
+        (
+            "check_selling_price",
+            "check(selling_price > 0)",
+            "Selling price must be strictly positive.",
+        ),
+    ]
 
     @api.depends("offer_ids.price")
     def _compute_best_price(self):
@@ -83,10 +95,6 @@ class RealEstateProperty(models.Model):
             self.garden_area = 0
             self.garden_orientation = False
 
-
-  
-
-
     def action_sold(self):
         for record in self:
             if record.state == "canceled":
@@ -100,3 +108,14 @@ class RealEstateProperty(models.Model):
             if record.state == "sold":
                 raise UserError("You cannot cancel a property that has been sold.")
             record.state = "canceled"
+
+    @api.constrains('selling_price','expected_price')
+    def _check_selling_price(self):
+        for record in self:
+            if float_is_zero(record.selling_price, precision_digits=2):
+                continue 
+            if float_compare(record.selling_price, record.expected_price * 0.9, precision_digits=2) < 0:
+                raise ValidationError(
+                    "Selling price cannot be lower than 90% of the expected price."
+                )
+            
