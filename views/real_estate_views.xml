@@ -4,15 +4,22 @@
         <field name="name">real.estate.property.tree</field>
         <field name="model">real.estate.property</field>
         <field name="arch" type="xml">
-            <tree string="Real Estate Properties">
+            <tree string="Real Estate Properties"
+      decoration-success="state == 'offer_received' or state == 'offer_accepted'"
+      decoration-bf="state == 'offer_accepted'"
+      decoration-muted="state == 'sold'">
                 <field name="name"/>
                 <field name="postcode"/>
                 <field name="bedrooms"/>
-                <!-- <field name="tag_ids" widget="many2many_tags"/> -->
+                <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
                 <field name="living_area"/>
                 <field name="expected_price"/>
                 <field name="selling_price"/>
                 <field name="property_type_id"/>
+                <field name="state" invisible="1" />
+
+                <field name="date_availability" optional="hide" />
+
             </tree>
         </field>
     </record>
@@ -26,10 +33,17 @@
                 <field name="description"/>
                 <field name="postcode"/>
                 <field name="date_availability"/>
+                <!-- <filter string="Available" name="available" domain="[
+                            '|', ('state','=','new'), ('state','=','offer_received')
+                        ]" /> -->
                 <field name="expected_price"/>
                 <field name="selling_price"/>
                 <field name="bedrooms"/>
-                <field name="living_area"/>
+                <field name="living_area" filter_domain="[(
+                            'living_area',
+                            '>=',
+                            self
+                        )]" />
                 <field name="garage"/>
                 <field name="facades"/>
                 <field name="garden"/>
@@ -106,7 +120,7 @@
                             </group>
                         </page>
                         <page string="Offers ">
-    
+
                             <field name="offer_ids" attrs= "{'readonly': ['|','|', ('state', '=', 'sold'), ('state', '=', 'canceled'), ('state', '=', 'offer_accepted')]}" />
 
                         </page>
