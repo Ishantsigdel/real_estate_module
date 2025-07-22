@@ -106,13 +106,8 @@
                             </group>
                         </page>
                         <page string="Offers ">
-
-                            <field name="offer_ids"/>
-                             <tree editable="bottom" create="true" delete="true"
-                            attrs="{'readonly': [('state', 'in', ['offer_accepted', 'sold', 'canceled'])]}">
-                            </tree>
-                            
-
+    
+                            <field name="offer_ids" attrs= "{'readonly': ['|','|', ('state', '=', 'sold'), ('state', '=', 'canceled'), ('state', '=', 'offer_accepted')]}" />
 
                         </page>
                     </notebook>
