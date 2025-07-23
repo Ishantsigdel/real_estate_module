@@ -119,4 +119,8 @@ class RealEstateProperty(models.Model):
                 raise ValidationError(
                     "Selling price cannot be lower than 90% of the expected price."
                 )
-            
+
+    @api.ondelete(at_uninstall=False)
+    def _unlink_if_not_new_or_canceled(self):
+        if any(record.state != "new" and record.state != "canceled" for record in self):
+            raise UserError("You can only delete new or canceled properties!")
