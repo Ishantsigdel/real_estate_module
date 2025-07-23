@@ -42,4 +42,12 @@
             </form>
         </field>
     </record>
+ <record id="real_estate_property_offer_action" model="ir.actions.act_window">
+    <field name="domain">[('property_type_id', '=', context.get('search_default_property_type_id'))]</field>
+        <field name="res_model">estate.property.offer</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+  
+
 </odoo>

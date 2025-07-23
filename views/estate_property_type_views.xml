@@ -17,6 +17,12 @@
     <field name="arch" type="xml">
         <form>
             <sheet>
+                                    <div class="oe_button_box" name="button_box">
+                            <button name="action_stat_button" type="object" class="oe_stat_button" icon="fa-money" context="{'xml_id': 'estate.real_estate_property_offer_action'}">
+                                <field name="offer_ids" string="Offer" widget="statinfo" />
+                            </button>
+                        </div>
+
                 <div class="oe_title">
                     <h1><field name="name"/></h1>
                 </div>

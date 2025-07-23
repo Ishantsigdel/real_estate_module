@@ -30,6 +30,9 @@ class EstatePropertyOffer(models.Model):
     buyer_id = fields.Many2one(
         "res.partner", related="property_id.buyer_id", readonly=True
     )
+    property_type_id = fields.Many2one(
+        related="property_id.property_type_id", store=True
+    )
 
     _sql_constraints = [
         (
