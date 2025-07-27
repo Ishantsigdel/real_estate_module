@@ -3,3 +3,4 @@ access_real_estate_property,access_real_estate_property,model_real_estate_proper
 access_real_estate_property_type,access_real_estate_property_type,model_estate_property_type,base.group_user,1,1,1,1
 access_real_estate_property_tag,access_real_estate_property_tag,model_estate_property_tag,base.group_user,1,1,1,1
 access_real_estate_property_offer,access_real_estate_property_offer,model_estate_property_offer,base.group_user,1,1,1,1
+
